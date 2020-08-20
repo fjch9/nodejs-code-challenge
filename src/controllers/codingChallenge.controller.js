@@ -12,31 +12,38 @@ exports.upload = (req, res) => {
         status: false,
         message: "No file uploaded"
       });
+    }
+    if (!req.body.brand) {
+      res.send({
+        status: false,
+        message: "No brand specified"
+      });
     } else {
       let csvFile = req.files.file;
 
       //this will place the file into the upload directory
       csvFile.mv("./uploads/" + csvFile.name);
 
-      //parse the csv into json
-
+      //parsing the csv into json
       csvtojson()
         .fromFile(`./uploads/${req.files.file.name}`)
         .then(csvData => {
-          console.log(csvData);
+          // console.log(csvData);
+          console.log(req.body.brand);
+
+          //we'll proceed to process the data according to each car brand
+
+          res.send({
+            status: true,
+            message: "CSV file uploaded!",
+            data: {
+              name: csvFile.name,
+              mimetype: csvFile.mimetype,
+              size: csvFile.size,
+              data: csvData
+            }
+          });
         });
-
-      //we'll proceed to process the data according to each car brand
-
-      res.send({
-        status: true,
-        message: "CSV file uploaded!",
-        data: {
-          name: csvFile.name,
-          mimetype: csvFile.mimetype,
-          size: csvFile.size
-        }
-      });
     }
   } catch (err) {
     res.status(500).send(err);
