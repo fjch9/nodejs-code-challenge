@@ -18,6 +18,16 @@ exports.upload = (req, res) => {
       //this will place the file into the upload directory
       csvFile.mv("./uploads/" + csvFile.name);
 
+      //parse the csv into json
+
+      csvtojson()
+        .fromFile(`./uploads/${req.files.file.name}`)
+        .then(csvData => {
+          console.log(csvData);
+        });
+
+      //we'll proceed to process the data according to each car brand
+
       res.send({
         status: true,
         message: "CSV file uploaded!",
@@ -54,12 +64,6 @@ exports.upload = (req, res) => {
   //       res.status(500).send({
   //         message: err.message || "Some error occurred while uploading the data."
   //       });
-  //     });
-
-  //   csvtojson()
-  //     .fromFile(`./${req.files.file.name}`)
-  //     .then(csvData => {
-  //       console.log(csvData);
   //     });
 
   //   res.send(req.files);
