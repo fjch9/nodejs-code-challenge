@@ -1,0 +1,22 @@
+{
+  "brands": {
+    "Mazda": {
+      "columnLayout": [
+        "UUI",
+        "VIN",
+        "brand",
+        "model",
+        "miliage",
+        "year",
+        "price",
+        "zip"
+      ]
+    },
+    "Toyota": {
+      "columnLayout": []
+    },
+    "Nissan": {
+      "columnLayout": []
+    }
+  }
+}
