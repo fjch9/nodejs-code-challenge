@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const db = require("./src/models");
+const fileUpload = require("express-fileupload");
 
 const app = express();
 
@@ -14,6 +15,12 @@ app.use(cors(corsOptions));
 // parse requests of content-type - application/json - application/x-www-form-urlencoded
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(
+  fileUpload({
+    createParentPath: true
+  })
+);
 
 // generic route
 app.get("/", (req, res) => {
