@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const db = require("./src/models");
 const fileUpload = require("express-fileupload");
+const { MongoMemoryServer } = require("mongodb-memory-server");
 
 const app = express();
 
@@ -32,18 +33,44 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-//connects with db
-db.mongoose
-  .connect(db.url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    console.log("Connected to the database");
-  })
-  .catch(err => {
-    console.log("Cannot connect to the database", err);
-    process.exit();
+//connects with local mongodb
+// db.mongoose
+//   .connect(db.url, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+//   })
+// .then(() => {
+//   console.log("Connected to the database");
+// })
+// .catch(err => {
+//   console.log("Cannot connect to the database", err);
+//   process.exit();
+// });
+
+// connects with mongodb-memory-server instance
+const mongoServer = new MongoMemoryServer();
+
+db.mongoose.Promise = Promise;
+mongoServer.getUri().then(mongoUri => {
+  const mongooseOpts = {
+    autoReconnect: true,
+    reconnectTries: Number.MAX_VALUE,
+    reconnectInterval: 1000
+  };
+
+  db.mongoose.connect(mongoUri, mongooseOpts);
+
+  db.mongoose.connection.on("error", e => {
+    if (e.message.code === "ETIMEDOUT") {
+      console.log(e);
+      db.mongoose.connect(mongoUri, mongooseOpts);
+    }
+    console.log(e);
   });
+
+  db.mongoose.connection.once("open", () => {
+    console.log(`MongoDB successfully connected to ${mongoUri}`);
+  });
+});
 
 require("./src/routes/codingChallenge.routes")(app);
