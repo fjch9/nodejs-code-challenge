@@ -1,5 +1,17 @@
 {
   "brands": {
+    "defaultLayout": {
+      "columnLayout": [
+        "uui",
+        "vin",
+        "make",
+        "model",
+        "mileage",
+        "year",
+        "price",
+        "zip_code"
+      ]
+    },
     "mazda": {
       "columnLayout": [
         "UUI",

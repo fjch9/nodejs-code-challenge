@@ -32,11 +32,35 @@ exports.upload = (req, res) => {
         .then(csvData => {
           // console.log(csvData);
           const brand = req.body.brand.toLowerCase();
-          const columnLayout = brandLayouts.brands[brand].columnLayout;
 
-          // var obj = JSON.parse(brandLayouts);
+          const defaultColumns =
+            brandLayouts.brands["defaultLayout"].columnLayout;
 
           //we'll proceed to process the data according to each car brand
+          const columnLayout = brandLayouts.brands[brand].columnLayout;
+
+          let dataToImport = csvData.map(data => {
+            const processedData = new CsvUpload();
+            // const processedData = new CsvUpload({
+            //   uuid: "uuid",
+            //   vin: "req.body.vin",
+            //   make: "req.body.make",
+            //   model: "req.body.model",
+            //   mileage: 200,
+            //   year: 2000,
+            //   price: 1400,
+            //   zip_code: "req.body.zip_code"
+            // });
+            for (let [index, value] of columnLayout.entries()) {
+              // console.log(index, value);
+              // console.log(processedData[defaultColumns[index]]);
+              if (data.hasOwnProperty(value)) {
+                console.log(data[value]);
+                processedData[defaultColumns[index]] = data[value];
+              }
+            }
+            return processedData;
+          });
 
           res.send({
             status: true,
@@ -45,7 +69,7 @@ exports.upload = (req, res) => {
               name: csvFile.name,
               mimetype: csvFile.mimetype,
               size: csvFile.size,
-              data: csvData,
+              data: dataToImport,
               columnLayout: columnLayout
             }
           });
