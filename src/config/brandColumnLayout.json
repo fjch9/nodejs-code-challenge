@@ -1,6 +1,6 @@
 {
   "brands": {
-    "Mazda": {
+    "mazda": {
       "columnLayout": [
         "UUI",
         "VIN",
@@ -12,10 +12,10 @@
         "zip"
       ]
     },
-    "Toyota": {
+    "toyota": {
       "columnLayout": []
     },
-    "Nissan": {
+    "nissan": {
       "columnLayout": []
     }
   }

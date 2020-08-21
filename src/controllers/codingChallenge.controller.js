@@ -2,6 +2,8 @@ const csvtojson = require("csvtojson");
 
 const db = require("../models");
 const CsvUpload = db.csvUploads;
+// object with the column layout for each brand
+const brandLayouts = require("../config/brandColumnLayout.json");
 
 // Uploads CSV content
 exports.upload = (req, res) => {
@@ -29,7 +31,10 @@ exports.upload = (req, res) => {
         .fromFile(`./uploads/${req.files.file.name}`)
         .then(csvData => {
           // console.log(csvData);
-          console.log(req.body.brand);
+          const brand = req.body.brand.toLowerCase();
+          const columnLayout = brandLayouts.brands[brand].columnLayout;
+
+          // var obj = JSON.parse(brandLayouts);
 
           //we'll proceed to process the data according to each car brand
 
@@ -40,7 +45,8 @@ exports.upload = (req, res) => {
               name: csvFile.name,
               mimetype: csvFile.mimetype,
               size: csvFile.size,
-              data: csvData
+              data: csvData,
+              columnLayout: columnLayout
             }
           });
         });
