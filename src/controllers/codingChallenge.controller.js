@@ -41,27 +41,29 @@ exports.upload = (req, res) => {
 
           let dataToImport = csvData.map(data => {
             const processedData = new CsvUpload();
-            // const processedData = new CsvUpload({
-            //   uuid: "uuid",
-            //   vin: "req.body.vin",
-            //   make: "req.body.make",
-            //   model: "req.body.model",
-            //   mileage: 200,
-            //   year: 2000,
-            //   price: 1400,
-            //   zip_code: "req.body.zip_code"
-            // });
             for (let [index, value] of columnLayout.entries()) {
-              // console.log(index, value);
-              // console.log(processedData[defaultColumns[index]]);
               if (data.hasOwnProperty(value)) {
-                console.log(data[value]);
                 processedData[defaultColumns[index]] = data[value];
               }
             }
             return processedData;
           });
 
+          // Saves the data in the collection
+          for (let temp of dataToImport) {
+            temp
+              .save(temp)
+              .then(data => {
+                console.log(data);
+              })
+              .catch(err => {
+                res.status(500).send({
+                  message:
+                    err.message ||
+                    "Some error occurred while uploading the data."
+                });
+              });
+          }
           res.send({
             status: true,
             message: "CSV file uploaded!",
@@ -78,30 +80,4 @@ exports.upload = (req, res) => {
   } catch (err) {
     res.status(500).send(err);
   }
-
-  // const csvUpload = new CsvUpload({
-  //   uuid: req.body.uuid,
-  //   vin: req.body.vin,
-  //   make: req.body.make,
-  //   model: req.body.model,
-  //   mileage: req.body.mileage,
-  //   year: req.body.year,
-  //   price: req.body.price,
-  //   zip_code: req.body.zip_code
-  // });
-
-  // Saves the data in the collection
-  //   csvUpload
-  //     .save(csvUpload)
-  //     .then(data => {
-  //       console.log(data);
-  //       res.send(data);
-  //     })
-  //     .catch(err => {
-  //       res.status(500).send({
-  //         message: err.message || "Some error occurred while uploading the data."
-  //       });
-  //     });
-
-  //   res.send(req.files);
 };
